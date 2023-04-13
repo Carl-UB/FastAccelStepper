@@ -30,7 +30,7 @@ void FastAccelStepperEngine::init(uint8_t cpu_core) {
 }
 #endif
 void FastAccelStepperEngine::setExternalCallForPin(
-    bool (*func)(uint8_t pin, uint8_t value)) {
+    bool (*func)(uint16_t pin, uint8_t value)) {
   _externalCallForPin = func;
 }
 //*************************************************************************************************
@@ -38,7 +38,7 @@ bool FastAccelStepperEngine::_isValidStepPin(uint8_t step_pin) {
   return StepperQueue::isValidStepPin(step_pin);
 }
 //*************************************************************************************************
-bool FastAccelStepperEngine::isDirPinBusy(uint8_t dir_pin,
+bool FastAccelStepperEngine::isDirPinBusy(uint16_t dir_pin,
                                           uint8_t except_stepper) {
   for (uint8_t i = 0; i < MAX_STEPPER; i++) {
     if (i != except_stepper) {
@@ -126,8 +126,8 @@ void FastAccelStepperEngine::manageSteppers() {
     FastAccelStepper* s = _stepper[i];
     if (s) {
       if (s->needAutoDisable()) {
-        uint8_t high_active_pin = s->getEnablePinHighActive();
-        uint8_t low_active_pin = s->getEnablePinLowActive();
+        uint16_t high_active_pin = s->getEnablePinHighActive();
+        uint16_t low_active_pin = s->getEnablePinLowActive();
 
         // fasDisableInterrupts(); // TODO
         bool agree = true;
@@ -316,6 +316,7 @@ bool FastAccelStepper::externalDirPinChangeCompletedIfNeeded() {
 }
 #endif
 
+
 //*************************************************************************************************
 // fill_queue generates commands to the stepper for executing a ramp
 //
@@ -450,7 +451,7 @@ bool FastAccelStepper::needAutoDisable() {
   return need_disable;
 }
 
-bool FastAccelStepper::usesAutoEnablePin(uint8_t pin) {
+bool FastAccelStepper::usesAutoEnablePin(uint16_t pin) {
   if (pin != PIN_UNDEFINED) {
     if ((pin == _enablePinHighActive) || (pin == _enablePinLowActive)) {
       return true;
@@ -483,7 +484,7 @@ void FastAccelStepper::init(FastAccelStepperEngine* engine, uint8_t num,
 #endif
 }
 uint8_t FastAccelStepper::getStepPin() { return _stepPin; }
-void FastAccelStepper::setDirectionPin(uint8_t dirPin, bool dirHighCountsUp,
+void FastAccelStepper::setDirectionPin(uint16_t dirPin, bool dirHighCountsUp,
                                        uint16_t dir_change_delay_us) {
   _dirPin = dirPin;
   _dirHighCountsUp = dirHighCountsUp;
@@ -510,7 +511,7 @@ void FastAccelStepper::setDirectionPin(uint8_t dirPin, bool dirHighCountsUp,
     _dir_change_delay_ticks = 0;
   }
 }
-void FastAccelStepper::setEnablePin(uint8_t enablePin,
+void FastAccelStepper::setEnablePin(uint16_t enablePin,
                                     bool low_active_enables_stepper) {
   if (low_active_enables_stepper) {
     _enablePinLowActive = enablePin;

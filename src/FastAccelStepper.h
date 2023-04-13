@@ -118,7 +118,7 @@ class FastAccelStepperEngine {
   // Stepperpins (enable or direction), which should use this external callback,
   // need to be or'ed with PIN_EXTERNAL_FLAG ! FastAccelStepper uses this flag
   // to determine, if a pin is external or internal.
-  void setExternalCallForPin(bool (*func)(uint8_t pin, uint8_t value));
+  void setExternalCallForPin(bool (*func)(uint16_t pin, uint8_t value));
 
   // ### Debug LED
   //
@@ -131,13 +131,13 @@ class FastAccelStepperEngine {
   void manageSteppers();
 
  private:
-  bool isDirPinBusy(uint8_t dirPin, uint8_t except_stepper);
+  bool isDirPinBusy(uint16_t dirPin, uint8_t except_stepper);
 
   uint8_t _next_stepper_num;
   FastAccelStepper* _stepper[MAX_STEPPER];
 
   bool _isValidStepPin(uint8_t step_pin);
-  bool (*_externalCallForPin)(uint8_t pin, uint8_t value);
+  bool (*_externalCallForPin)(uint16_t pin, uint8_t value);
 
   friend class FastAccelStepper;
 };
@@ -249,9 +249,9 @@ class FastAccelStepper {
   // to MAX_DIR_DELAY_US. For external pins, dir_change_delay_us is ignored,
   // because the mechanism applied for external pins provides already pause
   // in the range of ms or more.
-  void setDirectionPin(uint8_t dirPin, bool dirHighCountsUp = true,
+  void setDirectionPin(uint16_t dirPin, bool dirHighCountsUp = true,
                        uint16_t dir_change_delay_us = 0);
-  inline uint8_t getDirectionPin() { return _dirPin; }
+  inline uint16_t getDirectionPin() { return _dirPin; }
   inline bool directionPinHighCountsUp() { return _dirHighCountsUp; }
 
   // ## Enable Pin
@@ -266,9 +266,9 @@ class FastAccelStepper {
   //    setEnablePin(pin1, true);
   //    setEnablePin(pin2, false);
   // If pin1 and pin2 are same, then the last call will be used.
-  void setEnablePin(uint8_t enablePin, bool low_active_enables_stepper = true);
-  inline uint8_t getEnablePinHighActive() { return _enablePinHighActive; }
-  inline uint8_t getEnablePinLowActive() { return _enablePinLowActive; }
+  void setEnablePin(uint16_t enablePin, bool low_active_enables_stepper = true);
+  inline uint16_t getEnablePinHighActive() { return _enablePinHighActive; }
+  inline uint16_t getEnablePinLowActive() { return _enablePinLowActive; }
 
   // using enableOutputs/disableOutputs the stepper can be enabled and disabled
   // For a running motor with autoEnable set, disableOutputs() will return false
@@ -590,16 +590,16 @@ class FastAccelStepper {
   void blockingWaitForForceStopComplete();
   bool needAutoDisable();
   bool agreeWithAutoDisable();
-  bool usesAutoEnablePin(uint8_t pin);
+  bool usesAutoEnablePin(uint16_t pin);
 
   FastAccelStepperEngine* _engine;
   RampGenerator _rg;
   uint8_t _stepPin;
-  uint8_t _dirPin;
+  uint16_t _dirPin;
   bool _dirHighCountsUp;
   bool _autoEnable;
-  uint8_t _enablePinLowActive;
-  uint8_t _enablePinHighActive;
+  uint16_t _enablePinLowActive;
+  uint16_t _enablePinHighActive;
   uint8_t _queue_num;
 
   uint16_t _dir_change_delay_ticks;
